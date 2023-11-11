@@ -6,24 +6,40 @@ from pygame.locals import (  # назначаю клавиши
     K_DOWN,
     K_LEFT,
     K_RIGHT,
+    K_ESCAPE,
     KEYDOWN,
+    QUIT,
     K_SPACE
+
 )
+
+# основные настройки
+pygame.init()
+SCREEN_WIDTH = 800  # ширина
+SCREEN_HEIGHT = 600  # высота
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+clock = pygame.time.Clock()
+fps = 90  # кадры в секунду
+
+
 class Game():
-    SCREEN_WIDTH = 800
-    SCREEN_HEIGHT = 800
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    ADD_ENEMY = pygame.USEREVENT + 1
-    pygame.time.set_timer(ADD_ENEMY, 800)
-    player = PLayer()
-    screen.fill((0, 20, 150))
+    def __init__(self, screen):
+        self.screen = screen
+
+    def update(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super(Player, self).__init__()
-        self.image = pygame.sprite.
+        self.image = pygame.surface.Surface(20, 20)
         self.rect = pygame.image.get_rect()
+
     def update(self):
+        # движение игрока
         pressed_keys = pygame.key.get_pressed()
         if pressed_keys == K_UP:
             self.rect.move_ip(0, -5)
@@ -51,3 +67,24 @@ class Player(pygame.sprite.Sprite):
         else:
             if self.rect.bottom > SCREEN_HEIGHT:
                 self.rect.bottom = SCREEN_HEIGHT
+
+
+# группы
+enemies = pygame.sprite.Group()
+bullets = pygame.sprite.Group()
+all_sprites = pygame.sprite.Group()
+# счётчик
+time_score = 1
+enemy_score = 0
+is_game_over = False
+# экран
+state = 'game'
+# цикл игры
+game = Game(screen)
+running = True
+while running:  # если цикл игры
+    clock.tick(fps)  # fps
+    screen.fill((0, 60, 120))  # экран
+    game.update()  # игра
+    pygame.display.flip()
+pygame.quit()
