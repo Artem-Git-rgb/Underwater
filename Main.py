@@ -35,12 +35,16 @@ class Game():
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super(Player, self).__init__()
-        self.image = pygame.surface.Surface(20, 20)
+        self.image = pygame.Surface((20, 20))
+        self.color = (250, 250, 250)
         self.rect = pygame.image.get_rect()
+        self.image.fill(self.color)
+        self.speed = 1
 
     def update(self):
         # движение игрока
-        pressed_keys = pygame.key.get_pressed()
+        self.speed = 0
+        pressed_keys = pygame.key.get_pressed()  # проверка на нажатие кнопок
         if pressed_keys == K_UP:
             self.rect.move_ip(0, -5)
         if pressed_keys == K_DOWN:
@@ -51,7 +55,7 @@ class Player(pygame.sprite.Sprite):
             self.rect.move_ip(5, 0)
         if self.rect.left < 0:
             self.rect.left = 0
-        # если граница карты
+        # если граница экрана
         if self.rect.right > SCREEN_WIDTH:
             self.rect.right = SCREEN_WIDTH
         if self.vertical == 1:
@@ -60,13 +64,6 @@ class Player(pygame.sprite.Sprite):
         else:
             if self.rect.top < 0:
                 self.rect.top = 0
-
-        if self.vertical == -1:
-            if self.rect.bottom > SCREEN_HEIGHT - 10:
-                self.rect.bottom = SCREEN_HEIGHT - 10
-        else:
-            if self.rect.bottom > SCREEN_HEIGHT:
-                self.rect.bottom = SCREEN_HEIGHT
 
 
 # группы
