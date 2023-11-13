@@ -25,20 +25,25 @@ fps = 90  # кадры в секунду
 class Game():
     def __init__(self, screen):
         self.screen = screen
+        self.player = Player()
+        self.all_sprites = pygame.sprite.Group()
+        self.all_sprites.add(self.player)
 
     def update(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+            self.all_sprites.update()
+            for i in self.all_sprites:
+                self.screen.blit(i.image, i.rect)
 
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super(Player, self).__init__()
         self.image = pygame.Surface((20, 20))
-        self.color = (250, 250, 250)
-        self.rect = pygame.image.get_rect()
-        self.image.fill(self.color)
+        self.rect = pygame.Surface.get_rect(self.image)
+        self.image.fill((250, 250, 250))
         self.speed = 1
 
     def update(self):
@@ -58,21 +63,20 @@ class Player(pygame.sprite.Sprite):
         # если граница экрана
         if self.rect.right > SCREEN_WIDTH:
             self.rect.right = SCREEN_WIDTH
-        if self.vertical == 1:
-            if self.rect.top < -10:
-                self.rect.top = -10
-        else:
-            if self.rect.top < 0:
-                self.rect.top = 0
+        if self.rect.left < 0:
+            self.rect.left = 0
+        if self.rect.top > SCREEN_HEIGHT:
+            self.rect.top = SCREEN_HEIGHT
+        if self.rect.bottom > 0:
+            self.rect.bottom = 0
 
 
 # группы
-enemies = pygame.sprite.Group()
-bullets = pygame.sprite.Group()
-all_sprites = pygame.sprite.Group()
+# enemies = pygame.sprite.Group()
+# bullets = pygame.sprite.Group()
 # счётчик
-time_score = 1
-enemy_score = 0
+# time_score = 1
+# enemy_score = 0
 is_game_over = False
 # экран
 state = 'game'
@@ -81,7 +85,7 @@ game = Game(screen)
 running = True
 while running:  # если цикл игры
     clock.tick(fps)  # fps
-    screen.fill((0, 60, 120))  # экран
+    screen.fill((0, 50, 120))  # экран
     game.update()  # игра
     pygame.display.flip()
 pygame.quit()
