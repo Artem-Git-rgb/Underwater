@@ -42,33 +42,31 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super(Player, self).__init__()
         self.image = pygame.Surface((20, 20))
-        self.rect = pygame.Surface.get_rect(self.image)
+        self.rect = self.image.get_rect()
         self.image.fill((250, 250, 250))
-        self.speed = 1
+        self.rect.x = SCREEN_WIDTH / 2
+        self.rect.y = SCREEN_HEIGHT / 2
 
     def update(self):
         # движение игрока
-        self.speed = 0
         pressed_keys = pygame.key.get_pressed()  # проверка на нажатие кнопок
-        if pressed_keys == K_UP:
+        if pressed_keys[K_UP]:
             self.rect.move_ip(0, -5)
-        if pressed_keys == K_DOWN:
+        if pressed_keys[K_DOWN]:
             self.rect.move_ip(0, 5)
-        if pressed_keys == K_LEFT:
+        if pressed_keys[K_LEFT]:
             self.rect.move_ip(-5, 0)
-        if pressed_keys == K_RIGHT:
+        if pressed_keys[K_RIGHT]:
             self.rect.move_ip(5, 0)
-        if self.rect.left < 0:
-            self.rect.left = 0
         # если граница экрана
         if self.rect.right > SCREEN_WIDTH:
             self.rect.right = SCREEN_WIDTH
         if self.rect.left < 0:
             self.rect.left = 0
-        if self.rect.top > SCREEN_HEIGHT:
-            self.rect.top = SCREEN_HEIGHT
-        if self.rect.bottom > 0:
-            self.rect.bottom = 0
+        if self.rect.bottom > SCREEN_HEIGHT:
+            self.rect.bottom = SCREEN_HEIGHT
+        if self.rect.top < 0:
+            self.rect.top = 0
 
 
 class Enemy():
