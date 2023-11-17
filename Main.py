@@ -71,6 +71,24 @@ class Player(pygame.sprite.Sprite):
             self.rect.bottom = 0
 
 
+class Enemy():
+    def __init__(self):
+        super(Enemy, self).__init__()
+        self.image = pygame.Surface((20, 20))
+        self.rect = pygame.Surface.get_rect(self.image)
+        self.image.fill((255, 10, 10))
+        self.rect = self.image.get_rect(
+            center=(random.randint(SCREEN_HEIGHT + 20, SCREEN_HEIGHT + 100), random.randint(0, SCREEN_WIDTH)))
+        self.speed = random.randint(5, 7)
+
+    def update(self):
+        # движение врага
+        self.rect.move_ip(0, self.speed)
+        # если граница экрана => уничтожить
+        if self.rect.center > SCREEN_HEIGHT:
+            self.kill()
+
+
 # группы
 # enemies = pygame.sprite.Group()
 # bullets = pygame.sprite.Group()
