@@ -33,18 +33,20 @@ class Game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-            self.all_sprites.update()
-            for i in self.all_sprites:
-                self.screen.blit(i.image, i.rect)
+        self.all_sprites.update()
+        for i in self.all_sprites:
+            self.screen.blit(i.image, i.rect)
 
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super(Player, self).__init__()
-        self.image = pygame.Surface((20, 20))
+        s_y = 30
+        s_x = 30
+        self.image = pygame.Surface((s_x, s_y))
         self.rect = self.image.get_rect()
         self.image.fill((250, 250, 250))
-        self.rect.x = SCREEN_WIDTH / 2
+        self.rect.x = (SCREEN_WIDTH / 2) - s_y/2
         self.rect.y = SCREEN_HEIGHT / 2
 
     def update(self):
@@ -69,19 +71,19 @@ class Player(pygame.sprite.Sprite):
             self.rect.top = 0
 
 
-class Enemy():
+class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super(Enemy, self).__init__()
         self.image = pygame.Surface((20, 20))
-        self.rect = pygame.Surface.get_rect(self.image)
+        self.rect = self.image.get_rect()
         self.image.fill((255, 10, 10))
-        self.rect = self.image.get_rect(
-            center=(random.randint(SCREEN_HEIGHT + 20, SCREEN_HEIGHT + 100), random.randint(0, SCREEN_WIDTH)))
+        self.rect.x = random.randint(0, SCREEN_WIDTH)
+        self.rect.y = 0
         self.speed = random.randint(5, 7)
 
     def update(self):
         # движение врага
-        self.rect.move_ip(0, self.speed)
+        self.rect.y += self.speed
         # если граница экрана => уничтожить
         if self.rect.center > SCREEN_HEIGHT:
             self.kill()
