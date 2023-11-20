@@ -20,20 +20,28 @@ SCREEN_HEIGHT = 600  # высота
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 fps = 90  # кадры в секунду
+user_event = pygame.USEREVENT + 1
 
 
 class Game():
     def __init__(self, screen):
         self.screen = screen
         self.player = Player()
+        self.us_ev = user_event
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.player)
+        self.enemies = pygame.sprite.Group()
 
     def update(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+            if event.type == user_event:
+                self.enemy = Enemy()
+                self.enemies.add(self.enemy)
+                self.all_sprites.add(self.enemy)
         self.all_sprites.update()
+        self.enemies.update()
         for i in self.all_sprites:
             self.screen.blit(i.image, i.rect)
 
@@ -46,7 +54,7 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.Surface((s_x, s_y))
         self.rect = self.image.get_rect()
         self.image.fill((250, 250, 250))
-        self.rect.x = (SCREEN_WIDTH / 2) - s_y/2
+        self.rect.x = (SCREEN_WIDTH / 2) - s_y / 2
         self.rect.y = SCREEN_HEIGHT / 2
 
     def update(self):
@@ -89,9 +97,6 @@ class Enemy(pygame.sprite.Sprite):
             self.kill()
 
 
-# группы
-# enemies = pygame.sprite.Group()
-# bullets = pygame.sprite.Group()
 # счётчик
 # time_score = 1
 # enemy_score = 0
