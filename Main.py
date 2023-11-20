@@ -1,6 +1,7 @@
 import pygame
 import random
 import time
+import sys
 from pygame.locals import (  # назначаю клавиши
     K_UP,
     K_DOWN,
@@ -37,6 +38,7 @@ class Game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+                sys.exit()
             if event.type == ADD_ENEMY:
                 enemy = Enemy()
                 self.enemies.add(enemy)
@@ -45,12 +47,15 @@ class Game():
         self.enemies.update()
         for i in self.all_sprites:
             self.screen.blit(i.image, i.rect)
+        if pygame.sprite.spritecollide(self.player, self.enemies, True):
+            pygame.quit()
+            sys.exit()
 
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super(Player, self).__init__()
-        s_y = 60
+        s_y = 75
         s_x = 25
         self.image = pygame.Surface((s_x, s_y))
         self.rect = self.image.get_rect()
@@ -64,11 +69,11 @@ class Player(pygame.sprite.Sprite):
         if pressed_keys[K_UP]:
             self.rect.move_ip(0, -5)
         if pressed_keys[K_DOWN]:
-            self.rect.move_ip(0, 5)
+            self.rect.move_ip(0, 3)
         if pressed_keys[K_LEFT]:
-            self.rect.move_ip(-5, 0)
+            self.rect.move_ip(-4, 0)
         if pressed_keys[K_RIGHT]:
-            self.rect.move_ip(5, 0)
+            self.rect.move_ip(4, 0)
         # если граница экрана
         if self.rect.right > SCREEN_WIDTH:
             self.rect.right = SCREEN_WIDTH
@@ -78,6 +83,22 @@ class Player(pygame.sprite.Sprite):
             self.rect.bottom = SCREEN_HEIGHT
         if self.rect.top < 0:
             self.rect.top = 0
+
+
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self):
+        super(Bullet, self).__init__()
+        self.image = pygame.Surface((5, 15))
+        self.rect = self.image.get_rect()
+        self.image.fill((250, 250, 0))
+        self.speed = 10
+
+    def update(self):
+        # движение пули
+        self.rect.y -= self.speed
+        # если граница экрана => уничтожить
+        if self.rect.top > -SCREEN_HEIGHT:
+            self.kill()
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -101,13 +122,11 @@ class Enemy(pygame.sprite.Sprite):
 # счётчик
 # time_score = 1
 # enemy_score = 0
-is_game_over = False
 # экран
 state = 'game'
 # цикл игры
 game = Game(screen, ADD_ENEMY)
-running = True
-while running:  # если цикл игры
+while True:  # если цикл игры
     clock.tick(fps)  # fps
     screen.fill((0, 50, 120))  # экран
     game.update()  # игра
