@@ -20,14 +20,15 @@ SCREEN_HEIGHT = 600  # высота
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 fps = 90  # кадры в секунду
-user_event = pygame.USEREVENT + 1
+ADD_ENEMY = pygame.USEREVENT + 1
+pygame.time.set_timer(ADD_ENEMY, random.randrange(400, 500))
 
 
 class Game():
     def __init__(self, screen):
         self.screen = screen
         self.player = Player()
-        self.us_ev = user_event
+        self.ADD_ENEMY = ADD_ENEMY
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.player)
         self.enemies = pygame.sprite.Group()
@@ -36,7 +37,7 @@ class Game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-            if event.type == user_event:
+            if event.type == ADD_ENEMY:
                 self.enemy = Enemy()
                 self.enemies.add(self.enemy)
                 self.all_sprites.add(self.enemy)
