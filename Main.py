@@ -28,11 +28,12 @@ pygame.time.set_timer(ADD_ENEMY, random.randrange(400, 500))
 class Game():
     def __init__(self, screen, add_enemy):
         self.screen = screen
-        self.player = Player()
         self.ADD_ENEMY = add_enemy
         self.all_sprites = pygame.sprite.Group()
-        self.all_sprites.add(self.player)
         self.enemies = pygame.sprite.Group()
+        self.bullets = pygame.sprite.Group()
+        self.player = Player(self.bullets, self.all_sprites)
+        self.all_sprites.add(self.player)
 
     def update(self):
         for event in pygame.event.get():
@@ -45,6 +46,7 @@ class Game():
                 self.all_sprites.add(enemy)
         self.all_sprites.update()
         self.enemies.update()
+        self.bullets.update()
         for i in self.all_sprites:
             self.screen.blit(i.image, i.rect)
         if pygame.sprite.spritecollide(self.player, self.enemies, True):
@@ -53,7 +55,7 @@ class Game():
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, bullets, all_sprites):
         super(Player, self).__init__()
         s_y = 75
         s_x = 25
@@ -62,6 +64,10 @@ class Player(pygame.sprite.Sprite):
         self.image.fill((250, 250, 250))
         self.rect.x = (SCREEN_WIDTH / 2) - s_x / 2
         self.rect.y = SCREEN_HEIGHT / 2 - s_y / 2
+        self.last_shoot = pygame.time.get_ticks()
+        self.shoot_speed = 500
+        self.all_sprites = all_sprites
+        self.bullets = bullets
 
     def update(self):
         # движение игрока
@@ -74,6 +80,9 @@ class Player(pygame.sprite.Sprite):
             self.rect.move_ip(-4, 0)
         if pressed_keys[K_RIGHT]:
             self.rect.move_ip(4, 0)
+        # стрельба
+        if pressed_keys[K_SPACE]:
+            self.shoot()
         # если граница экрана
         if self.rect.right > SCREEN_WIDTH:
             self.rect.right = SCREEN_WIDTH
@@ -84,20 +93,30 @@ class Player(pygame.sprite.Sprite):
         if self.rect.top < 0:
             self.rect.top = 0
 
+    def shoot(self):
+        self.now = pygame.time.get_ticks()
+        if self.now - self.last_shoot > self.shoot_speed:
+            self.last_shoot = self.now
+            bullet = Bullet(self.rect.x + 7, self.rect.y)
+            self.all_sprites.add(bullet)
+            self.bullets.add(bullet)
+
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, x, y):
         super(Bullet, self).__init__()
-        self.image = pygame.Surface((5, 15))
+        self.image = pygame.Surface((10, 25))
         self.rect = self.image.get_rect()
         self.image.fill((250, 250, 0))
-        self.speed = 10
+        self.speed = 3
+        self.rect.x = x
+        self.rect.y = y
 
     def update(self):
         # движение пули
         self.rect.y -= self.speed
         # если граница экрана => уничтожить
-        if self.rect.top > -SCREEN_HEIGHT:
+        if self.rect.top < 0:
             self.kill()
 
 
@@ -131,4 +150,3 @@ while True:  # если цикл игры
     screen.fill((0, 50, 120))  # экран
     game.update()  # игра
     pygame.display.flip()
-pygame.quit()
