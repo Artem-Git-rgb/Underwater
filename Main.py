@@ -14,6 +14,13 @@ from pygame.locals import (  # назначаю клавиши
 
 )
 
+
+# текст
+def draw_text(text, font, color, x, y, screen):
+    txt = font.render(text, True, color)
+    screen.blit(txt, (x, y))
+
+
 # основные настройки
 pygame.init()
 SCREEN_WIDTH = 800  # ширина
@@ -34,6 +41,7 @@ class Game():
         self.bullets = pygame.sprite.Group()
         self.player = Player(self.bullets, self.all_sprites)
         self.all_sprites.add(self.player)
+        self.font = pygame.font.Font(None, 36)
 
     def update(self):
         for event in pygame.event.get():
@@ -42,8 +50,8 @@ class Game():
                 sys.exit()
             if event.type == ADD_ENEMY:
                 enemy = Enemy()
-                self.enemies.add(enemy)
                 self.all_sprites.add(enemy)
+                self.enemies.add(enemy)
         self.all_sprites.update()
         self.enemies.update()
         self.bullets.update()
@@ -52,6 +60,12 @@ class Game():
         if pygame.sprite.spritecollide(self.player, self.enemies, True):
             pygame.quit()
             sys.exit()
+        hits = pygame.sprite.groupcollide(self.bullets, self.enemies, True, True)
+        for hit in hits:
+            enemy = Enemy()
+            self.all_sprites.add(enemy)
+            self.enemies.add(enemy)
+        draw_text('Submarine', self.font, (255, 255, 255), 20, SCREEN_HEIGHT - 40, self.screen)
 
 
 class Player(pygame.sprite.Sprite):
