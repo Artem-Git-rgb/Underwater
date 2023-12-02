@@ -42,6 +42,7 @@ class Game():
         self.player = Player(self.bullets, self.all_sprites)
         self.all_sprites.add(self.player)
         self.font = pygame.font.Font(None, 36)
+        self.points = 0
 
     def update(self):
         for event in pygame.event.get():
@@ -65,7 +66,9 @@ class Game():
             enemy = Enemy()
             self.all_sprites.add(enemy)
             self.enemies.add(enemy)
-        draw_text('Submarine', self.font, (255, 255, 255), 20, SCREEN_HEIGHT - 40, self.screen)
+            self.points += 1
+        draw_text('Submarine', self.font, (255, 255, 255), 650, SCREEN_HEIGHT - 40, self.screen)
+        draw_text('Ваш счёт: ' + str(self.points), self.font, (255, 255, 255), 20, SCREEN_HEIGHT - 40, self.screen)
 
 
 class Player(pygame.sprite.Sprite):
