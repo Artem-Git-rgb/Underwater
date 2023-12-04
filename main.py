@@ -9,7 +9,7 @@ clock = pygame.time.Clock()
 ADD_ENEMY = pygame.USEREVENT + 1
 pygame.time.set_timer(ADD_ENEMY, random.randrange(400, 500))
 # экран
-state = 'game'
+# state = 'game'
 # цикл игры
 game = Game(screen, ADD_ENEMY)
 while True:  # если цикл игры
