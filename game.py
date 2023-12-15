@@ -4,6 +4,7 @@ from enemy import Enemy
 from player import Player
 from settings import draw_text, SCREEN_HEIGHT
 from pygame.locals import K_SPACE
+from leaderboard import Leaderboard
 
 
 class Game(object):
@@ -19,6 +20,9 @@ class Game(object):
         self.points = 0
         self.state = "main menu"
         self.new_game = True
+        # таблица рекордов
+        self.player_name = ""
+        self.leaderboard = Leaderboard(screen)
 
     def update(self):
         for event in pygame.event.get():
@@ -27,8 +31,13 @@ class Game(object):
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                 if self.state == "main menu":
-                    if event.key == K_SPACE:
+                    if event.key == K_SPACE and len(self.player_name) >= 2:
                         self.state = "game"
+                    elif event.key == pygame.K_BACKSPACE:
+                        self.player_name = self.player_name[:-1]
+                    else:
+                        if len(self.player_name) < 10 and event.key != pygame.K_SPACE:
+                            self.player_name += event.unicode
                 if self.state == "game over" and event.key == K_SPACE:
                     self.state = "main menu"
             if event.type == self.ADD_ENEMY:
@@ -51,10 +60,13 @@ class Game(object):
             self.game_over()
 
     def main_menu(self):
-        draw_text('Submarine', self.font, (255, 255, 255), 330, 150, self.screen)
-        draw_text('Уклоняйся от ракет и выпускай пули', self.font, (255, 255, 255), 190, 200, self.screen)
-        draw_text('Стрелочки - движение, пробел - выстрел', self.font, (255, 255, 255), 170, 250, self.screen)
-        draw_text('Таблица рекордов:', self.font, (255, 255, 255), 280, 300, self.screen)
+        draw_text('Submarine', self.font, (255, 255, 255), 330, 100, self.screen)
+        draw_text('Уклоняйся от ракет и выпускай пули', self.font, (255, 255, 255), 190, 150, self.screen)
+        draw_text('Стрелочки - движение, пробел - выстрел', self.font, (255, 255, 255), 170, 200, self.screen)
+        draw_text('Таблица рекордов:', self.font, (255, 255, 255), 150, 250, self.screen)
+        draw_text('Введите имя: ', self.font, (255, 255, 255), 450, 250, self.screen)
+        draw_text(self.player_name, self.font, (255, 255, 255), 500, 350, self.screen)
+        self.leaderboard.print()
 
     def game(self):
         self.all_sprites.update()
@@ -64,6 +76,7 @@ class Game(object):
             self.screen.blit(i.image, i.rect)
         if pygame.sprite.spritecollide(self.player, self.enemies, True):
             self.state = "game over"
+            self.leaderboard.insert_update(self.player_name, self.points)
             self.new_game = True
         hits = pygame.sprite.groupcollide(self.bullets, self.enemies, True, True)
         for hit in hits:
