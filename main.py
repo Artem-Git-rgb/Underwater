@@ -16,6 +16,6 @@ pygame.time.set_timer(ADD_ENEMY, random.randrange(400, 500))
 game = Game(screen, ADD_ENEMY)
 while True:  # если цикл игры
     clock.tick(FPS)  # fps
-    screen.fill((0, 30, 120))  # экран
+    screen.fill((0, 70, 95))  # экран для меню
     game.update()  # игра
     pygame.display.flip()

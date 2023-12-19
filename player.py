@@ -12,15 +12,18 @@ from settings import SCREEN_WIDTH, SCREEN_HEIGHT
 class Player(pygame.sprite.Sprite):
     def __init__(self, bullets, all_sprites):
         super(Player, self).__init__()
-        s_y = 75
-        s_x = 25
-        self.image = pygame.Surface((s_x, s_y))
+        s_y = 90
+        s_x = 30
+        # изображение
+        self.image = pygame.image.load("submarine_image.png").convert()
+        self.image.set_colorkey((255, 255, 255))
+        self.image = pygame.transform.scale(self.image, (s_x, s_y))
+        # далее
         self.rect = self.image.get_rect()
-        self.image.fill((250, 250, 250))
         self.rect.x = (SCREEN_WIDTH / 2) - s_x / 2
         self.rect.y = SCREEN_HEIGHT / 2 + s_y
         self.last_shoot = pygame.time.get_ticks()
-        self.shoot_speed = 450
+        self.shoot_speed = 400
         self.all_sprites = all_sprites
         self.bullets = bullets
 
@@ -60,9 +63,12 @@ class Player(pygame.sprite.Sprite):
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super(Bullet, self).__init__()
-        self.image = pygame.Surface((10, 25))
+        # изображение
+        self.image = pygame.image.load("bullet_image.png").convert()
+        self.image.set_colorkey((255, 255, 255))
+        self.image = pygame.transform.scale(self.image, (10, 40))
+        # далее
         self.rect = self.image.get_rect()
-        self.image.fill((250, 250, 0))
         self.speed = 3
         self.rect.x = x
         self.rect.y = y

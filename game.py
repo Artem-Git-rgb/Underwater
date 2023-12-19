@@ -2,14 +2,19 @@ import pygame
 import sys
 from enemy import Enemy
 from player import Player
-from settings import draw_text, SCREEN_HEIGHT
+from settings import draw_text, SCREEN_HEIGHT, SCREEN_WIDTH
 from pygame.locals import K_SPACE
 from leaderboard import Leaderboard
 
 
 class Game(object):
     def __init__(self, screen, add_enemy):
+        # изображение фона
         self.screen = screen
+        self.image = pygame.image.load("new_ocean.png").convert()
+        self.image.set_colorkey((255, 255, 255))
+        self.image = pygame.transform.scale(self.image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+        # далее
         self.ADD_ENEMY = add_enemy
         self.all_sprites = pygame.sprite.Group()
         self.enemies = pygame.sprite.Group()
@@ -69,6 +74,7 @@ class Game(object):
         self.leaderboard.print()
 
     def game(self):
+        self.screen.blit(self.image, (0, 0))
         self.all_sprites.update()
         self.enemies.update()
         self.bullets.update()

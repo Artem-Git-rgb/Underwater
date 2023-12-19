@@ -26,7 +26,7 @@ class Leaderboard:
                 else:
                     scr = cur.execute("SELECT * FROM leaderboard WHERE name =:Player_name",
                                       {"Player_name": player_name}).fetchall()
-                    if scr[0][0] < score:
+                    if scr[0][1] < score:
                         cur.execute("UPDATE leaderboard SET score =:Score WHERE name =:Player_name",
                                     {"Player_name": player_name, "Score": score})
 
