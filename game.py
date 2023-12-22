@@ -28,6 +28,11 @@ class Game(object):
         # таблица рекордов
         self.player_name = ""
         self.leaderboard = Leaderboard(screen)
+        # звуки
+        self.change_state_sound = pygame.mixer.Sound("change_screen.wav")
+        self.background_sound = pygame.mixer.Sound("dark_music.wav")
+        self.player_death_sound = pygame.mixer.Sound("big_ex.wav")
+        self.enemy_death_sound = pygame.mixer.Sound("small_ex.wav")
 
     def update(self):
         for event in pygame.event.get():
@@ -37,6 +42,8 @@ class Game(object):
             elif event.type == pygame.KEYDOWN:
                 if self.state == "main menu":
                     if event.key == K_SPACE and len(self.player_name) >= 2:
+                        self.change_state_sound.set_volume(0.1)
+                        self.change_state_sound.play()
                         self.state = "game"
                     elif event.key == pygame.K_BACKSPACE:
                         self.player_name = self.player_name[:-1]
@@ -81,6 +88,8 @@ class Game(object):
         for i in self.all_sprites:
             self.screen.blit(i.image, i.rect)
         if pygame.sprite.spritecollide(self.player, self.enemies, True):
+            self.player_death_sound.set_volume(0.1)
+            self.player_death_sound.play()
             self.state = "game over"
             self.leaderboard.insert_update(self.player_name, self.points)
             self.new_game = True
@@ -90,6 +99,8 @@ class Game(object):
             self.all_sprites.add(enemy)
             self.enemies.add(enemy)
             self.points += 1
+            self.enemy_death_sound.set_volume(0.1)
+            self.enemy_death_sound.play()
         draw_text('Submarine', self.font, (255, 255, 255), 650, SCREEN_HEIGHT - 40, self.screen)
         draw_text('Ваш счёт: ' + str(self.points), self.font, (255, 255, 255), 20, SCREEN_HEIGHT - 40, self.screen)
 
