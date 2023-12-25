@@ -23,9 +23,11 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = (SCREEN_WIDTH / 2) - s_x / 2
         self.rect.y = SCREEN_HEIGHT / 2 + s_y
         self.last_shoot = pygame.time.get_ticks()
-        self.shoot_speed = 400
+        self.shot_speed = 400
         self.all_sprites = all_sprites
         self.bullets = bullets
+        # звук
+        self.shot_sound = pygame.mixer.Sound("shot.wav")
 
     def update(self):
         # движение игрока
@@ -52,8 +54,10 @@ class Player(pygame.sprite.Sprite):
             self.rect.top = 0
 
     def shoot(self):
+        self.shot_sound.set_volume(0.1)
+        self.shot_sound.play()
         self.now = pygame.time.get_ticks()
-        if self.now - self.last_shoot > self.shoot_speed:
+        if self.now - self.last_shoot > self.shot_speed:
             self.last_shoot = self.now
             bullet = Bullet(self.rect.x + 7, self.rect.y)
             self.all_sprites.add(bullet)
