@@ -1,14 +1,13 @@
 import pygame
 import random
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT
-from game import Game
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, points):
         super(Enemy, self).__init__()
         # изображение
-        self.points = Game.__init__().points
+        self.points = points
         self.image = pygame.image.load("enemy_image.png").convert()
         self.image.set_colorkey((255, 255, 255))
         self.image = pygame.transform.scale(self.image, (20, 30))
@@ -17,7 +16,9 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = random.randint(0, SCREEN_WIDTH)
         self.rect.y = 0
-        if self.points < 10:
+        if self.points < 3:
+            self.speed = random.randint(1, 2)
+        elif self.points < 10:
             self.speed = random.randint(2, 3)
         elif self.points < 20:
             self.speed = random.randint(3, 4)

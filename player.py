@@ -23,11 +23,9 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = (SCREEN_WIDTH / 2) - s_x / 2
         self.rect.y = SCREEN_HEIGHT / 2 + s_y
         self.last_shoot = pygame.time.get_ticks()
-        self.shot_speed = 400
+        self.shoot_speed = 400
         self.all_sprites = all_sprites
         self.bullets = bullets
-        # звук
-        self.shot_sound = pygame.mixer.Sound("shot.wav")
 
     def update(self):
         # движение игрока
@@ -40,9 +38,6 @@ class Player(pygame.sprite.Sprite):
             self.rect.move_ip(-4, 0)
         if pressed_keys[K_RIGHT]:
             self.rect.move_ip(4, 0)
-        # стрельба
-        if pressed_keys[K_SPACE]:
-            self.shoot()
         # если граница экрана
         if self.rect.right > SCREEN_WIDTH:
             self.rect.right = SCREEN_WIDTH
@@ -54,10 +49,8 @@ class Player(pygame.sprite.Sprite):
             self.rect.top = 0
 
     def shoot(self):
-        self.shot_sound.set_volume(0.1)
-        self.shot_sound.play()
         self.now = pygame.time.get_ticks()
-        if self.now - self.last_shoot > self.shot_speed:
+        if self.now - self.last_shoot > self.shoot_speed:
             self.last_shoot = self.now
             bullet = Bullet(self.rect.x + 7, self.rect.y)
             self.all_sprites.add(bullet)
@@ -70,7 +63,7 @@ class Bullet(pygame.sprite.Sprite):
         # изображение
         self.image = pygame.image.load("bullet_image.png").convert()
         self.image.set_colorkey((255, 255, 255))
-        self.image = pygame.transform.scale(self.image, (10, 40))
+        self.image = pygame.transform.scale(self.image, (9, 39))
         # далее
         self.rect = self.image.get_rect()
         self.speed = 3
